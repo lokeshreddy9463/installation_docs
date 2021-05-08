@@ -1,0 +1,57 @@
+[AWS EC2] How to install Maven on Amazon Linux 2
+Overview
+Install Maven on AWS EC2 (AMI: Amazon Linux 2) to use the mvn command
+
+environment
+AWS EC2
+OS: Amazon Linux 2
+AMI ID: amzn2-ami-hvm-2.0.20200304.0-x86_64-gp2
+
+Construction procedure
+
+1. Install JDK 8
+--Amazon Linux 2 does not include Java by default, so install it --JDK 1.7 or higher is required for Apache Maven 3.3 or later
+
+$ sudo yum install -y java-1.8.0-openjdk-devel.x86_64
+$ sudo alternatives --config java
+$ java -version
+openjdk version "1.8.0_242"
+OpenJDK Runtime Environment (build 1.8.0_242-b08)
+OpenJDK 64-Bit Server VM (build 25.242-b08, mixed mode)
+
+2. Download Maven
+--Download destination: Downloading Apache Maven --Copy the URL of the Link of Binary tar.gz archive and download it with wget
+
+$ cd /usr/local/lib/
+$ sudo wget http://ftp.meisei-u.ac.jp/mirror/apache/dist/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz
+
+Saving to: ‘apache-maven-3.6.3-bin.tar.gz’  
+2020-03-27 11:23:54 (23.6 MB/s) - ‘apache-maven-3.6.3-bin.tar.gz’ saved [9506321/9506321]
+
+3. Unfold and deploy Maven
+--Unzip the downloaded file and place it in / opt / --Put the symbolic link of ʻapache-maven on the expanded ʻapache-maven-3.6.3
+
+$ sudo tar -xzvf apache-maven-3.6.3-bin.tar.gz
+$ sudo mv apache-maven-3.6.3 /opt/
+$ cd /opt/
+$ sudo ln -s /opt/apache-maven-3.6.3 apache-maven
+$ ls -l
+lrwxrwxrwx 1 root root 23 Mar 27 11:36 apache-maven -> /opt/apache-maven-3.6.3
+drwxr-xr-x 6 root root 99 Mar 27 11:28 apache-maven-3.6.3
+
+4. Add PATH to Maven
+--Add MVN_HOME to .bash_profile --Add MVN_HOME / bin to PATH --Reflect .bash_profile
+
+$ cd
+$ vi .bash_profile
+MVN_HOME=/opt/apache-maven
+PATH=$MVN_HOME/bin:$PATH:$HOME/.local/bin:$HOME/bin
+$ source .bash_profile
+
+5. Make sure you can use the mvn command
+$ mvn --version
+Apache Maven 3.6.3 (cecedd343002696d0abb50b32b541b8a6ba2883f)
+Maven home: /opt/apache-maven
+Java version: 1.8.0_242, vendor: Oracle Corporation, runtime: /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.242.b08-0.amzn2.0.1.x86_64/jre
+Default locale: en_US, platform encoding: UTF-8
+OS name: "linux", version: "4.14.171-136.231.amzn2.x86_64", arch: "amd64", family: "unix"
